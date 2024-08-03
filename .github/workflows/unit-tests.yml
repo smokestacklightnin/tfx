@@ -2,6 +2,7 @@
 
 name: tfx-unit-tests
 on:
+  push: # REMOVE BEFORE MERGE
   pull_request:
     branches: [ master ]
     paths-ignore:
