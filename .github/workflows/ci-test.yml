@@ -63,7 +63,7 @@ jobs:
     - name: Run unit tests
       shell: bash
       run: |
-        [ ! -s "py_test_files.txt" ] || cat py_test_files.txt | xargs -I {} bash -c "python {} || exit 255"
+        find ./tfx -name '*_test.py' | grep -v e2e | xargs -I {} bash -c "python {} || exit 255"
 
     - name: Lint with protolint
       continue-on-error: true
