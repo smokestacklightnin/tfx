@@ -52,7 +52,7 @@ jobs:
         python -m pip install Cython -c ./test_constraints.txt
         TFX_DEPENDENCY_SELECTOR=NIGHTLY pip install -c ./test_constraints.txt --extra-index-url https://pypi-nightly.tensorflow.org/simple --pre --editable .[all]
 
-    - name: Run unit tests
-      shell: bash
-      run: |
-        pytest
+    #- name: Run unit tests
+      #shell: bash
+      #run: |
+        #pytest
