@@ -242,6 +242,18 @@ def make_extra_packages_examples():
   ]
 
 
+def make_extra_packages_docs():
+  # Packages required for building docs as HTML
+  return [
+      'mkdocs',
+      'mkdocstrings[python]',
+      'mkdocs-material',
+      'griffe-inherited-docstrings',
+      'mkdocs-autorefs',
+      'black',
+  ]
+
+
 def make_extra_packages_all():
   # All extra dependencies.
   return [
@@ -252,4 +264,5 @@ def make_extra_packages_all():
       *make_extra_packages_tfdf(),
       *make_extra_packages_flax(),
       *make_extra_packages_examples(),
+      *make_extra_packages_docs()
   ]
