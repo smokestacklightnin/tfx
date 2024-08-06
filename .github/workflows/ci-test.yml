@@ -34,7 +34,7 @@ jobs:
         # Avoid downloading Bazel every time.
         bazelisk-cache: true
         # Store build cache per workflow.
-        disk-cache: ${{ github.workflow }}
+        disk-cache: ${{ github.workflow }}-${{ hashFiles('.github/workflows/ci-test.yml') }}
         # Share repository cache between workflows.
         repository-cache: true
       env:
