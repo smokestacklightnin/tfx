@@ -277,5 +277,3 @@ class SubpipelineTaskSchedulerTest(test_utils.TfxTest, parameterized.TestCase):
       )
 
 
-if __name__ == '__main__':
-  tf.test.main()

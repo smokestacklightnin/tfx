@@ -2399,5 +2399,3 @@ class PredicateResolutionTest(parameterized.TestCase, tf.test.TestCase):
         re.sub(r"\s+", "", expected_debug_str_pretty))
 
 
-if __name__ == "__main__":
-  tf.test.main()

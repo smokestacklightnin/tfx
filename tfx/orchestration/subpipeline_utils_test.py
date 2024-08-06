@@ -43,5 +43,3 @@ class SubpipelineUtilsTest(parameterized.TestCase):
     self.assertFalse(subpipeline_utils.is_subpipeline(pipeline_ir))
 
 
-if __name__ == '__main__':
-  absltest.main()
