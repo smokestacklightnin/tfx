@@ -1,0 +1,4035 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.31">
+    
+    
+      
+        <title>Data preprocessing for ML with Google Cloud - tfx</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.3cba04c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-preprocessing-for-ml-with-google-cloud" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="tfx" class="md-header__button md-logo" aria-label="tfx" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            tfx
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data preprocessing for ML with Google Cloud
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69m-9.15 3.96h2.3L12 9l-1.15 3.65Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/tensorflow/tfx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Tensorflow TFX
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="tfx" class="md-nav__button md-logo" aria-label="tfx" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    tfx
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/tensorflow/tfx" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Tensorflow TFX
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    What's New
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            What's New
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../addons" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TFX-Addons
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/solutions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TFX Cloud Solutions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/keras" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using Keras with TFX
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/non_tf" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using Non-TensorFlow Frameworks in TFX
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tfx_for_mobile" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mobile & IoT: TFX for TensorFlow Lite
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    TFX Pipelines
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            TFX Pipelines
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/understanding_tfx_pipelines" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Understanding TFX pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/build_tfx_pipeline" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Building a TFX pipeline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/build_local_pipeline" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local Pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    TFX Standard Components
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            TFX Standard Components
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/examplegen" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ExampleGen
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/statsgen" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    StatisticsGen
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/schemagen" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SchemaGen
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/exampleval" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ExampleValidator
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/transform" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Transform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/trainer" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Trainer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/tuner" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tuner
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/evaluator" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Evaluator
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/infra_validator" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    InfraValidator
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/pusher" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pusher
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/bulkinferrer" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    BulkInferrer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    TFX Custom Components
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            TFX Custom Components
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/understanding_custom_components" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Understanding custom components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/custom_function_component" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python function-based components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/container_component" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Container-based components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/custom_component" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fully custom components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Orchestrators
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            Orchestrators
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/local_orchestrator" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Local orchestrator
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/vertex" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vertex AI Pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/airflow" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apache Airflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/kubeflow" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kubeflow Pipelines
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    TFX CLI
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            TFX CLI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/cli" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using the TFX CLI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8" id="__nav_2_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Libraries
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            Libraries
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8_1" id="__nav_2_8_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Data Validation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_8_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            Data Validation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/tfdv" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Check and analyze data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/data_validation/install" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/data_validation/get_started" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Get started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8_2" id="__nav_2_8_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Transform
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_8_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8_2">
+            <span class="md-nav__icon md-icon"></span>
+            Transform
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/tft" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Preprocess and transform data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/transform/install" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/transform/get_started" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Get started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/transform/tf2_support" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using `tf.Transform` with TensorFlow 2.x
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/transform/common_transformations" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Common transformations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/tft_bestpractices" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data preprocessing best practices
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8_3" id="__nav_2_8_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modeling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_8_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8_3">
+            <span class="md-nav__icon md-icon"></span>
+            Modeling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/train" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Design modeling code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8_4" id="__nav_2_8_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Model Analysis
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_8_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8_4">
+            <span class="md-nav__icon md-icon"></span>
+            Model Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/tfma" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Improving Model Quality
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/install" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Install
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/get_started" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Get started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/setup" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/metrics" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrics and Plots
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/visualizations" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Visualizations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/model_validations" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Model Validations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/fairness_indicators" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using Fairness Indicators
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/responsible_ai/fairness_indicators/tutorials/Fairness_Indicators_Pandas_Case_Study" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using Fairness Indicators with Pandas DataFrames
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/architecture" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/model_analysis/faq" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_8_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_8_5" id="__nav_2_8_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Serving
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_8_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_8_5">
+            <span class="md-nav__icon md-icon"></span>
+            Serving
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/serving" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Serving models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/docker" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TensorFlow Serving with Docker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/setup" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/serving_basic" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Serve a TensorFlow model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/architecture" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/serving_config" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced model server configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/serving_advanced" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Build a TensorFlow ModelServer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/serving_kubernetes" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Use TensorFlow Serving with Kubernetes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/custom_servable" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Create a new kind of servable
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/custom_source" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Create a module that discovers new servable paths
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/custom_op" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Serving TensorFlow models with custom ops
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tfx/serving/signature_defs" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SignatureDefs in SavedModel for TensorFlow Serving
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_9" id="__nav_2_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Related projects
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_9">
+            <span class="md-nav__icon md-icon"></span>
+            Related projects
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://beam.apache.org/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Apache Beam
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://cloud.google.com/dataflow/docs/machine-learning/ml-preprocess-data" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MLTransform
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../guide/mlmd" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ML Metadata
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.tensorflow.org/tensorboard" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TensorBoard
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/root" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/components" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Components
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Costs
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#before-you-begin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before you begin
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jupyter-notebooks-for-this-solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Jupyter notebooks for this solution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#launch-a-user-managed-notebooks-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Launch a user-managed notebooks instance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clone-the-notebook" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clone the notebook
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implement-the-apache-beam-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implement the Apache Beam pipeline
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implement the Apache Beam pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-notebook-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run Notebook 1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overview-of-the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview of the pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read-raw-training-data-from-bigquery-idread_raw_training_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Read raw training data from BigQuery{: id="read_raw_training_data"}
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform-raw-training-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transform raw training data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Transform raw training data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-analyze-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      The analyze phase
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-transform-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      The transform phase
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write-transformed-training-data-idstep_3_write_transformed_training_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Write transformed training data{: id="step_3_write_transformed_training_data"}
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read-transform-and-write-evaluation-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Read, transform, and write evaluation data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save-the-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      Save the graph
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-pipeline-in-dataflowrun_the_pipeline_in_dataflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run the pipeline in Dataflow{:#run_the_pipeline_in_dataflow}
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run the pipeline in Dataflow{:#run_the_pipeline_in_dataflow}">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-the-model-for-serving-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Export the model for serving prediction
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#train-and-use-the-model-for-predictions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Train and use the model for predictions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clean-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      Clean up
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Clean up">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#delete-the-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delete the project
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#whats-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's next
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="data-preprocessing-for-ml-with-google-cloud">Data preprocessing for ML with Google Cloud<a class="headerlink" href="#data-preprocessing-for-ml-with-google-cloud" title="Permanent link">&para;</a></h1>
+<p>This tutorial shows you how to use
+<a class="external" href="https://github.com/tensorflow/transform">TensorFlow Transform</a>
+(the <code>tf.Transform</code> library) to implement data preprocessing for machine
+learning (ML). The <code>tf.Transform</code> library for TensorFlow lets you
+define both instance-level and full-pass data transformations through data
+preprocessing pipelines. These pipelines are efficiently executed with
+<a class="external" href="https://beam.apache.org/">Apache Beam</a>
+and they create as byproducts a TensorFlow graph to apply the
+same transformations during prediction as when the model is served.</p>
+<p>This tutorial provides an end-to-end example using
+<a class="external" href="https://cloud.google.com/dataflow/docs">Dataflow</a>
+as a runner for Apache Beam. It assumes that you're familiar with
+<a class="external" href="https://cloud.google.com/bigquery/docs">BigQuery</a>,
+Dataflow,
+<a class="external" href="https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform">Vertex AI</a>,
+and the TensorFlow
+<a href="https://www.tensorflow.org/guide/keras/overview">Keras</a>
+API. It also assumes that you have some experience using Jupyter Notebooks, such
+as with
+<a class="external" href="https://cloud.google.com/vertex-ai/docs/workbench/introduction">Vertex AI Workbench</a>.</p>
+<p>This tutorial also assumes that you're familiar with the concepts of
+preprocessing types, challenges, and options on Google Cloud, as described in
+<a href="../../guide/tft_bestpractices">Data preprocessing for ML: options and recommendations</a>.</p>
+<h2 id="objectives">Objectives<a class="headerlink" href="#objectives" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Implement the Apache Beam pipeline using the <code>tf.Transform</code> library.</li>
+<li>Run the pipeline in Dataflow.</li>
+<li>Implement the TensorFlow model using the <code>tf.Transform</code>
+    library.</li>
+<li>Train and use the model for predictions.</li>
+</ul>
+<h2 id="costs">Costs<a class="headerlink" href="#costs" title="Permanent link">&para;</a></h2>
+<p>This tutorial uses the following billable components of Google Cloud:</p>
+<ul>
+<li><a class="external" href="https://cloud.google.com/vertex-ai/pricing">Vertex AI</a></li>
+<li><a class="external" href="https://cloud.google.com/storage/pricing">Cloud Storage</a></li>
+<li><a class="external" href="https://cloud.google.com/bigquery/pricing">BigQuery</a></li>
+<li><a class="external" href="https://cloud.google.com/dataflow/pricing">Dataflow</a></li>
+</ul>
+<!-- This doc uses plain text cost information because the pricing calculator is pre-configured -->
+
+<p>To estimate the cost to run this tutorial, assuming you use every resource for
+an entire day, use the preconfigured
+<a class="external" href="/products/calculator/#id=fad408d8-dd68-45b8-954e-5a5619a5d148">pricing calculator</a>.</p>
+<h2 id="before-you-begin">Before you begin<a class="headerlink" href="#before-you-begin" title="Permanent link">&para;</a></h2>
+<ol>
+<li>In the Google Cloud console, on the project selector page, select or
+  <a href="https://cloud.google.com/resource-manager/docs/creating-managing-projects">create a Google Cloud project</a>. </li>
+</ol>
+<p>Note: If you don't plan to keep the resources that you create in this
+      procedure, create a project instead of selecting an existing project.
+      After you finish these steps, you can delete the project, removing all
+      resources associated with the project. </p>
+<p><a class="button button-primary" href="https://console.cloud.google.com/projectselector2/home/dashboard" target="console" track-metadata-position="body" track-name="consoleLink" track-type="solution">Go to project selector</a></p>
+<ol>
+<li>
+<p>Make sure that billing is enabled for your Cloud project. Learn how to
+  <a href="https://cloud.google.com/billing/docs/how-to/verify-billing-enabled">check if billing is enabled on a project</a>.</p>
+</li>
+<li>
+<p>Enable the Dataflow, Vertex AI, and Notebooks APIs.
+  <a class="button button-primary" href="https://console.cloud.google.com/flows/enableapi?apiid=dataflow,aiplatform.googleapis.com,notebooks.googleapis.com" target="console" track-metadata-position="body" track-name="consoleLink" track-type="solution">Enable the APIs</a></p>
+</li>
+</ol>
+<h2 id="jupyter-notebooks-for-this-solution">Jupyter notebooks for this solution<a class="headerlink" href="#jupyter-notebooks-for-this-solution" title="Permanent link">&para;</a></h2>
+<p>The following Jupyter notebooks show the implementation example:</p>
+<ul>
+<li><a class="external" href="https://github.com/GoogleCloudPlatform/training-data-analyst/blob/master/blogs/babyweight_tft/babyweight_tft_keras_01.ipynb">Notebook 1</a>
+    covers data preprocessing. Details are provided in the
+    <a href="#implement-the-apache-beam-pipeline">Implementing the Apache Beam pipeline</a>
+    section later.</li>
+<li><a class="external" href="https://github.com/GoogleCloudPlatform/training-data-analyst/blob/master/blogs/babyweight_tft/babyweight_tft_keras_02.ipynb">Notebook 2</a>
+    covers model training. Details are provided in the
+    <a href="#implement-the-tensorflow-model">Implementing the TensorFlow model</a>
+    section later.</li>
+</ul>
+<p>In the following sections, you clone these notebooks, and then you execute the
+notebooks to learn how the implementation example works.</p>
+<h2 id="launch-a-user-managed-notebooks-instance">Launch a user-managed notebooks instance<a class="headerlink" href="#launch-a-user-managed-notebooks-instance" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>In the Google Cloud console, go to the <strong>Vertex AI Workbench</strong> page.</p>
+<p><a class="button button-primary" href="https://console.cloud.google.com/ai-platform/notebooks/list/instances" target="console" track-metadata-position="body" track-name="consoleLink" track-type="solution">Go to Workbench</a></p>
+</li>
+<li>
+<p>On the <strong>User-managed notebooks</strong> tab, click <strong>+New notebook</strong>.</p>
+</li>
+<li>Select <strong>TensorFlow Enterprise 2.8 (with LTS) without GPUs</strong> for the
+    instance type.</li>
+<li>Click <strong>Create</strong>.</li>
+</ol>
+<p>After you create the notebook, wait for the proxy to JupyterLab to finish
+initializing. When it's ready, <strong>Open JupyterLab</strong> is displayed next to the
+notebook name.</p>
+<h2 id="clone-the-notebook">Clone the notebook<a class="headerlink" href="#clone-the-notebook" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>On the <strong>User-managed notebooks tab</strong>, next to the notebook name, click
+    <strong>Open JupyterLab</strong>. The JupyterLab interface opens in a new tab.</p>
+<p>If the JupyterLab displays a <strong>Build Recommended</strong> dialog, click
+<strong>Cancel</strong> to reject the suggested build.
+1.  On the <strong>Launcher</strong> tab, click <strong>Terminal</strong>.
+1.  In the terminal window, clone the notebook:</p>
+<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/GoogleCloudPlatform/training-data-analyst
+</span></code></pre></div></td></tr></table></div>
+</li>
+</ol>
+<h2 id="implement-the-apache-beam-pipeline">Implement the Apache Beam pipeline<a class="headerlink" href="#implement-the-apache-beam-pipeline" title="Permanent link">&para;</a></h2>
+<p>This section and the next section
+<a href="#run-the-pipeline-in-dataflow" track-metadata-position="body" track-name="internalLink" track-type="solution">Run the pipeline in Dataflow</a>
+provide an overview and context for Notebook 1. The notebook provides a
+practical example to describe how to use the <code>tf.Transform</code> library to
+preprocess data. This example uses the Natality dataset, which is used to
+predict baby weights based on various inputs. The data is stored in the public
+<a href="https://console.cloud.google.com/bigquery?p=bigquery-public-data&amp;d=samples&amp;t=natality&amp;page=table&amp;_ga=2.267763789.2122871960.1676620306-376763843.1676620306" target="console" track-metadata-position="body" track-name="consoleLink" track-type="solution">natality</a>
+table in BigQuery.</p>
+<h3 id="run-notebook-1">Run Notebook 1<a class="headerlink" href="#run-notebook-1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p>In the JupyterLab interface, click <strong>File &gt; Open from path</strong>, and
+    then enter the following path:</p>
+<div class="language-sh highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a>training-data-analyst/blogs/babyweight_tft/babyweight_tft_keras_01.ipynb
+</span></code></pre></div></td></tr></table></div>
+</li>
+<li>
+<p>Click <strong>Edit &gt; Clear all outputs</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Install required packages</strong> section, execute the first cell to
+    run the <code>pip install apache-beam</code> command.</p>
+<p>The last part of the output is the following:</p>
+<p><code>none{:.devsite-disable-click-to-copy}
+Successfully installed ...</code></p>
+<p>You can ignore dependency errors in the output. You don't need to restart
+the kernel yet.</p>
+</li>
+<li>
+<p>Execute the second cell to run the <code>pip install tensorflow-transform</code>command. The last part of the output is the following:</p>
+<p><code>none{:.devsite-disable-click-to-copy}
+Successfully installed ...
+Note: you may need to restart the kernel to use updated packages.</code></p>
+<p>You can ignore dependency errors in the output.</p>
+</li>
+<li>
+<p>Click <strong>Kernel &gt; Restart Kernel</strong>.</p>
+</li>
+<li>Execute the cells in the <strong>Confirm the installed packages</strong> and <strong>Create
+    setup.py to install packages to Dataflow containers</strong> sections.</li>
+<li>In the <strong>Set global flags</strong> section, next to <code>PROJECT</code> and <code>BUCKET</code>, replace
+    <code>your-project</code> with your Cloud project ID, and
+    then execute the cell.</li>
+<li>Execute all of the remaining cells through the last cell in the notebook.
+    For information about what to do in each cell, see the instructions in the
+    notebook.</li>
+</ol>
+<h3 id="overview-of-the-pipeline">Overview of the pipeline<a class="headerlink" href="#overview-of-the-pipeline" title="Permanent link">&para;</a></h3>
+<p>In the notebook example, Dataflow runs the <code>tf.Transform</code>
+pipeline at scale to prepare the data and produce the transformation artifacts.
+Later sections in this document describe the functions that perform each step in
+the pipeline. The overall pipeline steps are as follows:</p>
+<ol>
+<li>Read training data from BigQuery.</li>
+<li>Analyze and transform training data using the <code>tf.Transform</code> library.</li>
+<li>Write transformed training data to Cloud Storage in the
+    <a class="external" href="https://www.tensorflow.org/tutorials/load_data/tfrecord" target="external" track-metadata-position="body" track-name="externalLink" track-type="solution">TFRecord</a>
+    format.</li>
+<li>Read evaluation data from BigQuery.</li>
+<li>Transform evaluation data using the <code>transform_fn</code> graph produced by step 2.</li>
+<li>Write transformed training data to Cloud Storage in the
+    TFRecord format.</li>
+<li>Write transformation artifacts to Cloud Storage that will be used
+    later for creating and exporting the model.</li>
+</ol>
+<p>The following example shows the Python code for the overall pipeline. The
+sections that follow provide explanations and code listings for each step.</p>
+<p>```py{:.devsite-disable-click-to-copy}
+def run_transformation_pipeline(args):</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code>pipeline_options = beam.pipeline.PipelineOptions(flags=[], **args)
+
+runner = args[&#39;runner&#39;]
+data_size = args[&#39;data_size&#39;]
+transformed_data_location = args[&#39;transformed_data_location&#39;]
+transform_artefact_location = args[&#39;transform_artefact_location&#39;]
+temporary_dir = args[&#39;temporary_dir&#39;]
+debug = args[&#39;debug&#39;]
+
+# Instantiate the pipeline
+with beam.Pipeline(runner, options=pipeline_options) as pipeline:
+    with impl.Context(temporary_dir):
+
+        # Preprocess train data
+        step = &#39;train&#39;
+        # Read raw train data from BigQuery
+        raw_train_dataset = read_from_bq(pipeline, step, data_size)
+        # Analyze and transform raw_train_dataset
+        transformed_train_dataset, transform_fn = analyze_and_transform(raw_train_dataset, step)
+        # Write transformed train data to sink as tfrecords
+        write_tfrecords(transformed_train_dataset, transformed_data_location, step)
+
+        # Preprocess evaluation data
+        step = &#39;eval&#39;
+        # Read raw eval data from BigQuery
+        raw_eval_dataset = read_from_bq(pipeline, step, data_size)
+        # Transform eval data based on produced transform_fn
+        transformed_eval_dataset = transform(raw_eval_dataset, transform_fn, step)
+        # Write transformed eval data to sink as tfrecords
+        write_tfrecords(transformed_eval_dataset, transformed_data_location, step)
+
+        # Write transformation artefacts
+        write_transform_artefacts(transform_fn, transform_artefact_location)
+
+        # (Optional) for debugging, write transformed data as text
+        step = &#39;debug&#39;
+        # Write transformed train data as text if debug enabled
+        if debug == True:
+            write_text(transformed_train_dataset, transformed_data_location, step)
+</code></pre></div></td></tr></table></div>
+<p>```
+</p>
+<h3 id="read-raw-training-data-from-bigquery-idread_raw_training_data">Read raw training data from BigQuery{: id="read_raw_training_data"}<a class="headerlink" href="#read-raw-training-data-from-bigquery-idread_raw_training_data" title="Permanent link">&para;</a></h3>
+<p>The first step is to read the raw training data from BigQuery
+using the <code>read_from_bq</code> function. This function returns a <code>raw_dataset</code> object
+that is extracted from BigQuery. You pass a <code>data_size</code> value and
+pass a <code>step</code> value of <code>train</code> or <code>eval</code>. The BigQuery source
+query is constructed using the <code>get_source_query</code> function, as shown in the
+following example:
+
+<code>py{:.devsite-disable-click-to-copy}
+def read_from_bq(pipeline, step, data_size):
+
+    source_query = get_source_query(step, data_size)
+    raw_data = (
+        pipeline
+        | '{} - Read Data from BigQuery'.format(step) &gt;&gt; beam.io.Read(
+                           beam.io.BigQuerySource(query=source_query, use_standard_sql=True))
+        | '{} - Clean up Data'.format(step) &gt;&gt; beam.Map(prep_bq_row)
+    )
+
+    raw_metadata = create_raw_metadata()
+    raw_dataset = (raw_data, raw_metadata)
+    return raw_dataset</code></p>
+<p>Before you perform the <code>tf.Transform</code> preprocessing, you might need to perform
+typical Apache Beam-based processing, including Map, Filter, Group, and Window
+processing. In the example, the code cleans the records read from
+BigQuery using the <code>beam.Map(prep_bq_row)</code> method, where
+<code>prep_bq_row</code> is a custom function. This custom function converts the numeric
+code for a categorical feature into human-readable labels.</p>
+<p>In addition, to use the <code>tf.Transform</code> library to analyze and transform the
+<code>raw_data</code> object extracted from BigQuery, you need to create a
+<code>raw_dataset</code> object, which is a tuple of <code>raw_data</code> and <code>raw_metadata</code> objects.
+The <code>raw_metadata</code> object is created using the <code>create_raw_metadata</code> function,
+as follows:</p>
+<p>```py{:.devsite-disable-click-to-copy}
+CATEGORICAL_FEATURE_NAMES = ['is_male', 'mother_race']
+NUMERIC_FEATURE_NAMES = ['mother_age', 'plurality', 'gestation_weeks']
+TARGET_FEATURE_NAME = 'weight_pounds'</p>
+<p>def create_raw_metadata():</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span><code>feature_spec = dict(
+    [(name, tf.io.FixedLenFeature([], tf.string)) for name in CATEGORICAL_FEATURE_NAMES] +
+    [(name, tf.io.FixedLenFeature([], tf.float32)) for name in NUMERIC_FEATURE_NAMES] +
+    [(TARGET_FEATURE_NAME, tf.io.FixedLenFeature([], tf.float32))])
+
+raw_metadata = dataset_metadata.DatasetMetadata(
+    schema_utils.schema_from_feature_spec(feature_spec))
+
+return raw_metadata
+</code></pre></div></td></tr></table></div>
+<p><code>``
+
+When you execute the cell in the notebook that immediately follows the cell that
+defines this method, the content of the</code>raw_metadata.schema<code>object is
+displayed. It includes the following columns:
+
+-</code>gestation_weeks<code>(type:</code>FLOAT<code>)
+-</code>is_male<code>(type:</code>BYTES<code>)
+-</code>mother_age<code>(type:</code>FLOAT<code>)
+-</code>mother_race<code>(type:</code>BYTES<code>)
+-</code>plurality<code>(type:</code>FLOAT<code>)
+-</code>weight_pounds<code>(type:</code>FLOAT`)
+</p>
+<h3 id="transform-raw-training-data">Transform raw training data<a class="headerlink" href="#transform-raw-training-data" title="Permanent link">&para;</a></h3>
+<p>Imagine that you want to apply typical preprocessing transformations to the
+input raw features of the training data in order to prepare it for ML. These
+transformations include both full-pass and instance-level operations, as shown
+in the following table:
+
+<table>
+<thead>
+  <tr>
+    <th>Input feature</th>
+    <th>Transformation</th>
+    <th>Stats needed</th>
+    <th>Type</th>
+    <th>Output feature</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><code>weight_pound</code></td>
+    <td>None</td>
+    <td>None</td>
+    <td>NA</td>
+    <td><code>weight_pound</code></td>
+  </tr>
+  <tr>
+    <td><code>mother_age</code></td>
+    <td>Normalize</td>
+    <td>mean, var</td>
+    <td>Full-pass</td>
+    <td><code>mother_age_normalized</code></td>
+  </tr>
+  <tr>
+    <td><code>mother_age</code></td>
+    <td>Equal size bucketization</td>
+    <td>quantiles</td>
+    <td>Full-pass</td>
+    <td><code>mother_age_bucketized</code></td>
+  </tr>
+  <tr>
+    <td><code>mother_age</code></td>
+    <td>Compute the log</td>
+    <td>None</td>
+    <td>Instance-level</td>
+    <td>
+        <code>mother_age_log</code>
+    </td>
+  </tr>
+  <tr>
+    <td><code>plurality</code></td>
+    <td>Indicate if it is single or multiple babies</td>
+    <td>None</td>
+    <td>Instance-level</td>
+    <td><code>is_multiple</code></td>
+  </tr>
+  <tr>
+    <td><code>is_multiple</code></td>
+    <td>Convert nominal values to numerical index</td>
+    <td>vocab</td>
+    <td>Full-pass</td>
+    <td><code>is_multiple_index</code></td>
+  </tr>
+  <tr>
+    <td><code>gestation_weeks</code></td>
+    <td>Scale between 0 and 1</td>
+    <td>min, max</td>
+    <td>Full-pass</td>
+    <td><code>gestation_weeks_scaled</code></td>
+  </tr>
+  <tr>
+    <td><code>mother_race</code></td>
+    <td>Convert nominal values to numerical index</td>
+    <td>vocab</td>
+    <td>Full-pass</td>
+    <td><code>mother_race_index</code></td>
+  </tr>
+  <tr>
+    <td><code>is_male</code></td>
+    <td>Convert nominal values to numerical index</td>
+    <td>vocab</td>
+    <td>Full-pass</td>
+    <td><code>is_male_index</code></td>
+  </tr>
+</tbody>
+</table>
+
+These transformations are implemented in a <code>preprocess_fn</code> function, which
+expects a dictionary of tensors (<code>input_features</code>) and returns a dictionary of
+processed features (<code>output_features</code>).
+
+The following code shows the implementation of the <code>preprocess_fn</code> function,
+using the <code>tf.Transform</code> full-pass transformation APIs (prefixed with <code>tft.</code>),
+and TensorFlow (prefixed with <code>tf.</code>) instance-level operations:
+
+<code>py{:.devsite-disable-click-to-copy}
+def preprocess_fn(input_features):
+
+    output_features = {}
+
+    # target feature
+    output_features['weight_pounds'] = input_features['weight_pounds']
+
+    # normalization
+    output_features['mother_age_normalized'] = tft.scale_to_z_score(input_features['mother_age'])
+
+    # scaling
+    output_features['gestation_weeks_scaled'] =  tft.scale_to_0_1(input_features['gestation_weeks'])
+
+    # bucketization based on quantiles
+    output_features['mother_age_bucketized'] = tft.bucketize(input_features['mother_age'], num_buckets=5)
+
+    # you can compute new features based on custom formulas
+    output_features['mother_age_log'] = tf.math.log(input_features['mother_age'])
+
+    # or create flags/indicators
+    is_multiple = tf.as_string(input_features['plurality'] &gt; tf.constant(1.0))
+
+    # convert categorical features to indexed vocab
+    output_features['mother_race_index'] = tft.compute_and_apply_vocabulary(input_features['mother_race'], vocab_filename='mother_race')
+    output_features['is_male_index'] = tft.compute_and_apply_vocabulary(input_features['is_male'], vocab_filename='is_male')
+    output_features['is_multiple_index'] = tft.compute_and_apply_vocabulary(is_multiple, vocab_filename='is_multiple')
+
+    return output_features</code></p>
+<p>The <code>tf.Transform</code>
+<a class="external" href="https://github.com/tensorflow/transform">framework</a>
+has several other transformations in addition to those in the preceding example,
+including those listed in the following table:</p>
+<table>
+<thead>
+  <tr>
+  <th>Transformation</th>
+  <th>Applies to</th>
+  <th>Description</th>
+  </tr>
+</thead>
+<tbody>
+    <tr>
+    <td><code>scale_by_min_max</code></td>
+    <td>Numeric features</td>
+    <td>
+      Scales a numerical column into the range [<code>output_min</code>,
+      <code>output_max</code>]
+    </td>
+  </tr>
+  <tr>
+    <td><code>scale_to_0_1</code></td>
+    <td>Numeric features</td>
+    <td>
+      Returns a column which is the input column scaled to have range
+      [<code>0</code>,<code>1</code>]
+    </td>
+  </tr>
+  <tr>
+    <td><code>scale_to_z_score</code></td>
+    <td>Numeric features</td>
+    <td>Returns a standardized column with mean 0 and variance 1</td>
+  </tr>
+  <tr>
+    <td><code>tfidf</code></td>
+    <td>Text features</td>
+    <td>
+      Maps the terms in <i>x</i> to their term frequency * inverse document
+      frequency
+    </td>
+  </tr>
+  <tr>
+    <td><code>compute_and_apply_vocabulary</code></td>
+    <td>Categorical features</td>
+    <td>
+      Generates a vocabulary for a categorical feature and maps it to
+      an integer with this vocab
+    </td>
+  </tr>
+  <tr>
+    <td><code>ngrams</code></td>
+    <td>Text features</td>
+    <td>Creates a <code>SparseTensor</code> of n-grams</td>
+  </tr>
+  <tr>
+    <td><code>hash_strings</code></td>
+    <td>Categorical features</td>
+    <td>Hashes strings into buckets</td>
+  </tr>
+  <tr>
+    <td><code>pca</code></td>
+    <td>Numeric features</td>
+    <td>Computes PCA on the dataset using biased covariance</td>
+  </tr>
+  <tr>
+    <td><code>bucketize</code></td>
+    <td>Numeric features</td>
+    <td>
+      Returns an equal-sized (quantiles-based) bucketized column, with
+      a bucket index assigned to each input
+    </td>
+  </tr>
+</tbody>
+</table>
+
+<p>In order to apply the transformations implemented in the <code>preprocess_fn</code>
+function to the <code>raw_train_dataset</code> object produced in the previous step of the
+pipeline, you use the <code>AnalyzeAndTransformDataset</code> method. This method expects
+the <code>raw_dataset</code> object as input, applies the <code>preprocess_fn</code> function, and it
+produces the <code>transformed_dataset</code> object and the <code>transform_fn</code> graph. The
+following code illustrates this processing:</p>
+<p>```py{:.devsite-disable-click-to-copy}
+def analyze_and_transform(raw_dataset, step):</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code>transformed_dataset, transform_fn = (
+    raw_dataset
+    | &#39;{} - Analyze &amp; Transform&#39;.format(step) &gt;&gt; tft_beam.AnalyzeAndTransformDataset(
+        preprocess_fn, output_record_batches=True)
+)
+
+return transformed_dataset, transform_fn
+</code></pre></div></td></tr></table></div>
+<p><code>``
+
+The transformations are applied on the raw data in two phases: the analyze
+phase and the transform phase. Figure 3 later in this document shows how the</code>AnalyzeAndTransformDataset<code>method is decomposed to the</code>AnalyzeDataset<code>method
+and the</code>TransformDataset` method.
+</p>
+<h4 id="the-analyze-phase">The analyze phase<a class="headerlink" href="#the-analyze-phase" title="Permanent link">&para;</a></h4>
+<p>In the analyze phase, the raw training data is analyzed in a full-pass process
+to compute the statistics that are needed for the transformations. This includes
+computing the mean, variance, minimum, maximum, quantiles, and vocabulary. The
+analyze process expects a raw dataset (raw data plus raw metadata), and it
+produces two outputs:
+
+-   <code>transform_fn</code>: a TensorFlow graph that contains the
+    computed stats from the analyze phase and the transformation logic (which
+    uses the stats) as instance-level operations. As discussed later in
+    <a href="#save_the_graph" track-metadata-position="body" track-name="internalLink" track-type="solution">Save the graph</a>,
+    the <code>transform_fn</code> graph is saved to be attached to the model <code>serving_fn</code>
+    function. This makes it possible to apply the same transformation to the
+    online prediction data points.
+-   <code>transform_metadata</code>: an object that describes the expected schema of
+    the data after transformation.
+
+The analyze phase is illustrated in the following diagram, figure 1:
+
+<figure id="tf-transform-analyze-phase">
+  <img src="images/data-preprocessing-for-ml-with-tf-transform-tf-transform-analyze-phase.svg"
+    alt="The tf.Transform analyze phase.">
+  <figcaption><b>Figure 1.</b> The <code>tf.Transform</code> analyze phase.</figcaption>
+</figure>
+
+The <code>tf.Transform</code>
+<a class="external" href="https://github.com/tensorflow/transform/blob/master/tensorflow_transform/beam/analyzer_impls.py" target="github" track-metadata-position="body" track-name="gitHubLink" track-type="solution">analyzers</a>
+include <code>min</code>, <code>max</code>, <code>sum</code>, <code>size</code>, <code>mean</code>, <code>var</code>, <code>covariance</code>, <code>quantiles</code>,
+<code>vocabulary</code>, and <code>pca</code>.
+</p>
+<h4 id="the-transform-phase">The transform phase<a class="headerlink" href="#the-transform-phase" title="Permanent link">&para;</a></h4>
+<p>In the transform phase, the <code>transform_fn</code> graph that's produced by the analyze
+phase is used to transform the raw training data in an instance-level process in
+order to produce the transformed training data. The transformed training data is
+paired with the transformed metadata (produced by the analyze phase) to produce
+the <code>transformed_train_dataset</code> dataset.
+
+The transform phase is illustrated in the following diagram, figure 2:
+
+<figure id="tf-transform-transform-phase">
+  <img src="images/data-preprocessing-for-ml-with-tf-transform-tf-transform-transform-phase.svg"
+    alt="The tf.Transform transform phase.">
+  <figcaption><b>Figure 2.</b> The <code>tf.Transform</code> transform phase.</figcaption>
+</figure>
+
+To preprocess the features, you call the required <code>tensorflow_transform</code>
+transformations (imported as <code>tft</code> in the code) in your implementation of the
+<code>preprocess_fn</code> function. For example, when you call the <code>tft.scale_to_z_score</code>
+operations, the <code>tf.Transform</code> library translates this function call into mean
+and variance analyzers, computes the stats in the analyze phase, and then
+applies these stats to normalize the numeric feature in the transform phase.
+This is all done automatically by calling the
+<code>AnalyzeAndTransformDataset(preprocess_fn)</code> method.
+
+The <code>transformed_metadata.schema</code> entity produced by this call includes the
+following columns:
+
+-   <code>gestation_weeks_scaled</code> (type: <code>FLOAT</code>)
+-   <code>is_male_index</code> (type: <code>INT</code>, is_categorical: <code>True</code>)
+-   <code>is_multiple_index</code> (type: <code>INT</code>, is_categorical: <code>True</code>)
+-   <code>mother_age_bucketized</code> (type: <code>INT</code>, is_categorical: <code>True</code>)
+-   <code>mother_age_log</code> (type: <code>FLOAT</code>)
+-   <code>mother_age_normalized</code> (type: <code>FLOAT</code>)
+-   <code>mother_race_index</code> (type: <code>INT</code>, is_categorical: <code>True</code>)
+-   <code>weight_pounds</code> (type: <code>FLOAT</code>)
+
+As explained in
+<a href="data-preprocessing-for-ml-with-tf-transform-pt1#preprocessing_operations">Preprocessing operations</a>
+in the first part of this series, the feature transformation converts
+categorical features to a numeric representation. After the transformation, the
+categorical features are represented by integer values. In the
+<code>transformed_metadata.schema</code> entity, the <code>is_categorical</code> flag for <code>INT</code> type
+columns indicates whether the column represents a categorical feature or a true
+numeric feature.
+</p>
+<h3 id="write-transformed-training-data-idstep_3_write_transformed_training_data">Write transformed training data{: id="step_3_write_transformed_training_data"}<a class="headerlink" href="#write-transformed-training-data-idstep_3_write_transformed_training_data" title="Permanent link">&para;</a></h3>
+<p>After the training data is preprocessed with the <code>preprocess_fn</code> function
+through the analyze and transform phases, you can write the data to a sink to be
+used for training the TensorFlow model. When you execute the Apache
+Beam pipeline using Dataflow, the sink is Cloud Storage.
+Otherwise, the sink is the local disk. Although you can write the data as a CSV
+file of fixed-width formatted files, the recommended file format for
+TensorFlow datasets is the TFRecord format. This is a simple
+record-oriented binary format that consists of
+<code>tf.train.Example</code> protocol buffer messages.
+
+Each <code>tf.train.Example</code> record contains one or more features. These are
+converted into tensors when they are fed to the model for training. The
+following code writes the transformed dataset to TFRecord files in the specified
+location:
+
+<code>py{:.devsite-disable-click-to-copy}
+def write_tfrecords(transformed_dataset, location, step):
+    from tfx_bsl.coders import example_coder
+
+    transformed_data, transformed_metadata = transformed_dataset
+    (
+        transformed_data
+        | '{} - Encode Transformed Data'.format(step) &gt;&gt; beam.FlatMapTuple(
+                            lambda batch, _: example_coder.RecordBatchToExamples(batch))
+        | '{} - Write Transformed Data'.format(step) &gt;&gt; beam.io.WriteToTFRecord(
+                            file_path_prefix=os.path.join(location,'{}'.format(step)),
+                            file_name_suffix='.tfrecords')
+    )</code></p>
+<h3 id="read-transform-and-write-evaluation-data">Read, transform, and write evaluation data<a class="headerlink" href="#read-transform-and-write-evaluation-data" title="Permanent link">&para;</a></h3>
+<p>After you transform the training data and produce the <code>transform_fn</code> graph, you
+can use it to transform the evaluation data. First, you read and clean the
+evaluation data from BigQuery using the <code>read_from_bq</code> function
+described earlier in
+<a href="#read-raw-training-data-from-bigquery" track-metadata-position="body" track-name="internalLink" track-type="solution">Read raw training data from BigQuery</a>,
+and passing a value of <code>eval</code> for the <code>step</code> parameter. Then, you use the
+following code to transform the raw evaluation dataset (<code>raw_dataset</code>) to the
+expected transformed format (<code>transformed_dataset</code>):</p>
+<p>```py{:.devsite-disable-click-to-copy}
+def transform(raw_dataset, transform_fn, step):</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code>transformed_dataset = (
+    (raw_dataset, transform_fn)
+    | &#39;{} - Transform&#39;.format(step) &gt;&gt; tft_beam.TransformDataset(output_record_batches=True)
+)
+
+return transformed_dataset
+</code></pre></div></td></tr></table></div>
+<p><code>``
+
+When you transform the evaluation data, only instance-level operations apply,
+using both the logic in the</code>transform_fn<code>graph and the statistics computed
+from the analyze phase in the training data. In other words, you don't analyze
+the evaluation data in a full-pass fashion to compute new statistics, like the
+mean and the variance for z-score normalization of numeric features in
+evaluation data. Instead, you use the computed statistics from the training data
+to transform the evaluation data in an instance-level fashion.
+
+Therefore, you use the</code>AnalyzeAndTransform<code>method in the context of training
+data to compute the statistics and transform the data. At the same time, you use
+the</code>TransformDataset<code>method in the context of transforming evaluation data to
+only transform the data using the statistics computed on the training data.
+
+You then write the data to a sink (Cloud Storage or local disk,
+depending on the runner) in the TFRecord format for evaluating the
+TensorFlow model during the training process. To do this, you use
+the</code>write_tfrecords<code>function that's discussed in
+[Write transformed training data](#step_3_write_transformed_training_data){: track-type="solution" track-name="internalLink" track-metadata-position="body" }.
+The following diagram, figure 3, shows how the</code>transform_fn` graph that's
+produced in the analyze phase of the training data is used to transform the
+evaluation data.
+
+<figure id="transform-eval-data-using-transform-fn">
+  <img src="images/data-preprocessing-for-ml-with-tf-transform-transforming-eval-data-using-transform_fn.svg"
+    alt="Transforming evaluation data using the transform_fn graph.">
+  <figcaption><b>Figure 3.</b> Transforming evaluation data using the <code>transform_fn</code> graph.</figcaption>
+</figure>
+</p>
+<h3 id="save-the-graph">Save the graph<a class="headerlink" href="#save-the-graph" title="Permanent link">&para;</a></h3>
+<p>A final step in the <code>tf.Transform</code> preprocessing pipeline is to store the
+artifacts, which includes the <code>transform_fn</code> graph that's produced by the
+analyze phase on the training data. The code for storing the artifacts is shown
+in the following <code>write_transform_artefacts</code> function:
+
+<code>py{:.devsite-disable-click-to-copy}
+def write_transform_artefacts(transform_fn, location):
+
+    (
+        transform_fn
+        | 'Write Transform Artifacts' &gt;&gt; transform_fn_io.WriteTransformFn(location)
+    )</code></p>
+<p>These artifacts will be used later for model training and exporting for serving.
+The following artifacts are also produced, as shown in the next section:</p>
+<ul>
+<li><code>saved_model.pb</code>: represents the TensorFlow graph
+    that includes the transformation logic (the <code>transform_fn</code> graph), which is
+    to be attached to the model serving interface to transform the raw data
+    points to the transformed format.</li>
+<li><code>variables</code>: includes the statistics computed during the analyze
+    phase of the training data, and is used in the transformation logic in the
+    <code>saved_model.pb</code> artifact.</li>
+<li><code>assets</code>: includes vocabulary files, one for each categorical feature
+    processed with the <code>compute_and_apply_vocabulary</code> method, to be used
+    during serving to convert an input raw nominal value to a numerical index.</li>
+<li><code>transformed_metadata</code>: a directory that contains the <code>schema.json</code> file
+    that describes the schema of the transformed data.</li>
+</ul>
+<h2 id="run-the-pipeline-in-dataflowrun_the_pipeline_in_dataflow">Run the pipeline in Dataflow{:#run_the_pipeline_in_dataflow}<a class="headerlink" href="#run-the-pipeline-in-dataflowrun_the_pipeline_in_dataflow" title="Permanent link">&para;</a></h2>
+<p>After you define the <code>tf.Transform</code> pipeline, you run the pipeline using
+Dataflow. The following diagram, figure 4, shows the
+Dataflow execution graph of the <code>tf.Transform</code> pipeline described
+in the example.</p>
+<figure id="dataflow-execution-graph">
+  <img src="images/data-preprocessing-for-ml-with-tf-transform-dataflow-execution-graph.png"
+    alt="Dataflow execution graph of the tf.Transform pipeline." class="screenshot">
+  <figcaption><b>Figure 4.</b> Dataflow execution graph
+     of the <code>tf.Transform</code> pipeline.</figcaption>
+</figure>
+
+<p>After you execute the Dataflow pipeline to preprocess the
+training and evaluation data, you can explore the produced objects in
+Cloud Storage by executing the last cell in the notebook. The code
+snippets in this section show the results, where
+<var><code>YOUR_BUCKET_NAME</code></var> is the name of your Cloud Storage
+bucket.</p>
+<p>The transformed training and evaluation data in TFRecord format are stored at
+the following location:</p>
+<p>```none{:.devsite-disable-click-to-copy}
+gs://YOUR_BUCKET_NAME/babyweight_tft/transformed
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
+<span class="normal"><a href="#__codelineno-6-2">2</a></span>
+<span class="normal"><a href="#__codelineno-6-3">3</a></span>
+<span class="normal"><a href="#__codelineno-6-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1"></a>The transform artifacts are produced at the following location:
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3"></a>```none{:.devsite-disable-click-to-copy}
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4"></a>gs://YOUR_BUCKET_NAME/babyweight_tft/transform
+</span></code></pre></div></td></tr></table></div></p>
+<p>The following list is the output of the pipeline, showing the produced data
+objects and artifacts:</p>
+<p>```none{:.devsite-disable-click-to-copy}
+transformed data:
+gs://YOUR_BUCKET_NAME/babyweight_tft/transformed/eval-00000-of-00001.tfrecords
+gs://YOUR_BUCKET_NAME/babyweight_tft/transformed/train-00000-of-00002.tfrecords
+gs://YOUR_BUCKET_NAME/babyweight_tft/transformed/train-00001-of-00002.tfrecords</p>
+<p>transformed metadata:
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transformed_metadata/
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transformed_metadata/asset_map
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transformed_metadata/schema.pbtxt</p>
+<p>transform artefact:
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/saved_model.pb
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/assets/
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/variables/</p>
+<p>transform assets:
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/assets/
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/assets/is_male
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/assets/is_multiple
+gs://YOUR_BUCKET_NAME/babyweight_tft/transform/transform_fn/assets/mother_race
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">  1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">  2</a></span>
+<span class="normal"><a href="#__codelineno-7-3">  3</a></span>
+<span class="normal"><a href="#__codelineno-7-4">  4</a></span>
+<span class="normal"><a href="#__codelineno-7-5">  5</a></span>
+<span class="normal"><a href="#__codelineno-7-6">  6</a></span>
+<span class="normal"><a href="#__codelineno-7-7">  7</a></span>
+<span class="normal"><a href="#__codelineno-7-8">  8</a></span>
+<span class="normal"><a href="#__codelineno-7-9">  9</a></span>
+<span class="normal"><a href="#__codelineno-7-10"> 10</a></span>
+<span class="normal"><a href="#__codelineno-7-11"> 11</a></span>
+<span class="normal"><a href="#__codelineno-7-12"> 12</a></span>
+<span class="normal"><a href="#__codelineno-7-13"> 13</a></span>
+<span class="normal"><a href="#__codelineno-7-14"> 14</a></span>
+<span class="normal"><a href="#__codelineno-7-15"> 15</a></span>
+<span class="normal"><a href="#__codelineno-7-16"> 16</a></span>
+<span class="normal"><a href="#__codelineno-7-17"> 17</a></span>
+<span class="normal"><a href="#__codelineno-7-18"> 18</a></span>
+<span class="normal"><a href="#__codelineno-7-19"> 19</a></span>
+<span class="normal"><a href="#__codelineno-7-20"> 20</a></span>
+<span class="normal"><a href="#__codelineno-7-21"> 21</a></span>
+<span class="normal"><a href="#__codelineno-7-22"> 22</a></span>
+<span class="normal"><a href="#__codelineno-7-23"> 23</a></span>
+<span class="normal"><a href="#__codelineno-7-24"> 24</a></span>
+<span class="normal"><a href="#__codelineno-7-25"> 25</a></span>
+<span class="normal"><a href="#__codelineno-7-26"> 26</a></span>
+<span class="normal"><a href="#__codelineno-7-27"> 27</a></span>
+<span class="normal"><a href="#__codelineno-7-28"> 28</a></span>
+<span class="normal"><a href="#__codelineno-7-29"> 29</a></span>
+<span class="normal"><a href="#__codelineno-7-30"> 30</a></span>
+<span class="normal"><a href="#__codelineno-7-31"> 31</a></span>
+<span class="normal"><a href="#__codelineno-7-32"> 32</a></span>
+<span class="normal"><a href="#__codelineno-7-33"> 33</a></span>
+<span class="normal"><a href="#__codelineno-7-34"> 34</a></span>
+<span class="normal"><a href="#__codelineno-7-35"> 35</a></span>
+<span class="normal"><a href="#__codelineno-7-36"> 36</a></span>
+<span class="normal"><a href="#__codelineno-7-37"> 37</a></span>
+<span class="normal"><a href="#__codelineno-7-38"> 38</a></span>
+<span class="normal"><a href="#__codelineno-7-39"> 39</a></span>
+<span class="normal"><a href="#__codelineno-7-40"> 40</a></span>
+<span class="normal"><a href="#__codelineno-7-41"> 41</a></span>
+<span class="normal"><a href="#__codelineno-7-42"> 42</a></span>
+<span class="normal"><a href="#__codelineno-7-43"> 43</a></span>
+<span class="normal"><a href="#__codelineno-7-44"> 44</a></span>
+<span class="normal"><a href="#__codelineno-7-45"> 45</a></span>
+<span class="normal"><a href="#__codelineno-7-46"> 46</a></span>
+<span class="normal"><a href="#__codelineno-7-47"> 47</a></span>
+<span class="normal"><a href="#__codelineno-7-48"> 48</a></span>
+<span class="normal"><a href="#__codelineno-7-49"> 49</a></span>
+<span class="normal"><a href="#__codelineno-7-50"> 50</a></span>
+<span class="normal"><a href="#__codelineno-7-51"> 51</a></span>
+<span class="normal"><a href="#__codelineno-7-52"> 52</a></span>
+<span class="normal"><a href="#__codelineno-7-53"> 53</a></span>
+<span class="normal"><a href="#__codelineno-7-54"> 54</a></span>
+<span class="normal"><a href="#__codelineno-7-55"> 55</a></span>
+<span class="normal"><a href="#__codelineno-7-56"> 56</a></span>
+<span class="normal"><a href="#__codelineno-7-57"> 57</a></span>
+<span class="normal"><a href="#__codelineno-7-58"> 58</a></span>
+<span class="normal"><a href="#__codelineno-7-59"> 59</a></span>
+<span class="normal"><a href="#__codelineno-7-60"> 60</a></span>
+<span class="normal"><a href="#__codelineno-7-61"> 61</a></span>
+<span class="normal"><a href="#__codelineno-7-62"> 62</a></span>
+<span class="normal"><a href="#__codelineno-7-63"> 63</a></span>
+<span class="normal"><a href="#__codelineno-7-64"> 64</a></span>
+<span class="normal"><a href="#__codelineno-7-65"> 65</a></span>
+<span class="normal"><a href="#__codelineno-7-66"> 66</a></span>
+<span class="normal"><a href="#__codelineno-7-67"> 67</a></span>
+<span class="normal"><a href="#__codelineno-7-68"> 68</a></span>
+<span class="normal"><a href="#__codelineno-7-69"> 69</a></span>
+<span class="normal"><a href="#__codelineno-7-70"> 70</a></span>
+<span class="normal"><a href="#__codelineno-7-71"> 71</a></span>
+<span class="normal"><a href="#__codelineno-7-72"> 72</a></span>
+<span class="normal"><a href="#__codelineno-7-73"> 73</a></span>
+<span class="normal"><a href="#__codelineno-7-74"> 74</a></span>
+<span class="normal"><a href="#__codelineno-7-75"> 75</a></span>
+<span class="normal"><a href="#__codelineno-7-76"> 76</a></span>
+<span class="normal"><a href="#__codelineno-7-77"> 77</a></span>
+<span class="normal"><a href="#__codelineno-7-78"> 78</a></span>
+<span class="normal"><a href="#__codelineno-7-79"> 79</a></span>
+<span class="normal"><a href="#__codelineno-7-80"> 80</a></span>
+<span class="normal"><a href="#__codelineno-7-81"> 81</a></span>
+<span class="normal"><a href="#__codelineno-7-82"> 82</a></span>
+<span class="normal"><a href="#__codelineno-7-83"> 83</a></span>
+<span class="normal"><a href="#__codelineno-7-84"> 84</a></span>
+<span class="normal"><a href="#__codelineno-7-85"> 85</a></span>
+<span class="normal"><a href="#__codelineno-7-86"> 86</a></span>
+<span class="normal"><a href="#__codelineno-7-87"> 87</a></span>
+<span class="normal"><a href="#__codelineno-7-88"> 88</a></span>
+<span class="normal"><a href="#__codelineno-7-89"> 89</a></span>
+<span class="normal"><a href="#__codelineno-7-90"> 90</a></span>
+<span class="normal"><a href="#__codelineno-7-91"> 91</a></span>
+<span class="normal"><a href="#__codelineno-7-92"> 92</a></span>
+<span class="normal"><a href="#__codelineno-7-93"> 93</a></span>
+<span class="normal"><a href="#__codelineno-7-94"> 94</a></span>
+<span class="normal"><a href="#__codelineno-7-95"> 95</a></span>
+<span class="normal"><a href="#__codelineno-7-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-7-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-7-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-7-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-7-100">100</a></span>
+<span class="normal"><a href="#__codelineno-7-101">101</a></span>
+<span class="normal"><a href="#__codelineno-7-102">102</a></span>
+<span class="normal"><a href="#__codelineno-7-103">103</a></span>
+<span class="normal"><a href="#__codelineno-7-104">104</a></span>
+<span class="normal"><a href="#__codelineno-7-105">105</a></span>
+<span class="normal"><a href="#__codelineno-7-106">106</a></span>
+<span class="normal"><a href="#__codelineno-7-107">107</a></span>
+<span class="normal"><a href="#__codelineno-7-108">108</a></span>
+<span class="normal"><a href="#__codelineno-7-109">109</a></span>
+<span class="normal"><a href="#__codelineno-7-110">110</a></span>
+<span class="normal"><a href="#__codelineno-7-111">111</a></span>
+<span class="normal"><a href="#__codelineno-7-112">112</a></span>
+<span class="normal"><a href="#__codelineno-7-113">113</a></span>
+<span class="normal"><a href="#__codelineno-7-114">114</a></span>
+<span class="normal"><a href="#__codelineno-7-115">115</a></span>
+<span class="normal"><a href="#__codelineno-7-116">116</a></span>
+<span class="normal"><a href="#__codelineno-7-117">117</a></span>
+<span class="normal"><a href="#__codelineno-7-118">118</a></span>
+<span class="normal"><a href="#__codelineno-7-119">119</a></span>
+<span class="normal"><a href="#__codelineno-7-120">120</a></span>
+<span class="normal"><a href="#__codelineno-7-121">121</a></span>
+<span class="normal"><a href="#__codelineno-7-122">122</a></span>
+<span class="normal"><a href="#__codelineno-7-123">123</a></span>
+<span class="normal"><a href="#__codelineno-7-124">124</a></span>
+<span class="normal"><a href="#__codelineno-7-125">125</a></span>
+<span class="normal"><a href="#__codelineno-7-126">126</a></span>
+<span class="normal"><a href="#__codelineno-7-127">127</a></span>
+<span class="normal"><a href="#__codelineno-7-128">128</a></span>
+<span class="normal"><a href="#__codelineno-7-129">129</a></span>
+<span class="normal"><a href="#__codelineno-7-130">130</a></span>
+<span class="normal"><a href="#__codelineno-7-131">131</a></span>
+<span class="normal"><a href="#__codelineno-7-132">132</a></span>
+<span class="normal"><a href="#__codelineno-7-133">133</a></span>
+<span class="normal"><a href="#__codelineno-7-134">134</a></span>
+<span class="normal"><a href="#__codelineno-7-135">135</a></span>
+<span class="normal"><a href="#__codelineno-7-136">136</a></span>
+<span class="normal"><a href="#__codelineno-7-137">137</a></span>
+<span class="normal"><a href="#__codelineno-7-138">138</a></span>
+<span class="normal"><a href="#__codelineno-7-139">139</a></span>
+<span class="normal"><a href="#__codelineno-7-140">140</a></span>
+<span class="normal"><a href="#__codelineno-7-141">141</a></span>
+<span class="normal"><a href="#__codelineno-7-142">142</a></span>
+<span class="normal"><a href="#__codelineno-7-143">143</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1"></a>## Implement the TensorFlow model{: id=&quot;implementing_the_tensorflow_model&quot;}
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3"></a>This section and the next section,
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4"></a>[Train and use the model for predictions](#train_and_use_the_model_for_predictions){: track-type=&quot;solution&quot; track-name=&quot;internalLink&quot; track-metadata-position=&quot;body&quot; },
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5"></a>provide an overview and context for Notebook 2. The notebook provides
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6"></a>an example ML model to predict baby weights. In this example, a
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7"></a>TensorFlow model is implemented using the Keras API. The model
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8"></a>uses the data and artifacts that are produced by the `tf.Transform`
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9"></a>preprocessing pipeline explained earlier.
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10"></a>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11"></a>### Run Notebook 2
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12"></a>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13"></a>1.  In the JupyterLab interface, click **File &gt; Open from path**, and then
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14"></a>    enter the following path:
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15"></a>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16"></a>    ```sh
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17"></a>    training-data-analyst/blogs/babyweight_tft/babyweight_tft_keras_02.ipynb
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18"></a>    ```
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19"></a>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20"></a>1.  Click **Edit &gt; Clear all outputs**.
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21"></a>1.  In the **Install required packages** section, execute the first cell to run
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22"></a>    the `pip install tensorflow-transform` command.
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23"></a>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24"></a>    The last part of the output is the following:
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25"></a>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26"></a>    ```none{:.devsite-disable-click-to-copy}
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27"></a>    Successfully installed ...
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28"></a>    Note: you may need to restart the kernel to use updated packages.
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29"></a>    ```
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30"></a>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31"></a>    You can ignore dependency errors in the output.
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32"></a>
+</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33"></a>1.  In the **Kernel** menu, select **Restart Kernel**.
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34"></a>1.  Execute the cells in the **Confirm the installed packages** and **Create
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35"></a>    setup.py to install packages to Dataflow containers** sections.
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36"></a>1.  In the **Set global flags** section, next to `PROJECT` and `BUCKET`, replace
+</span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37"></a>    &lt;var&gt;`your-project`&lt;/var&gt; with your Cloud project ID, and
+</span><span id="__span-7-38"><a id="__codelineno-7-38" name="__codelineno-7-38"></a>    then execute the cell.
+</span><span id="__span-7-39"><a id="__codelineno-7-39" name="__codelineno-7-39"></a>1.  Execute all of the remaining cells through the last cell in the notebook.
+</span><span id="__span-7-40"><a id="__codelineno-7-40" name="__codelineno-7-40"></a>    For information about what to do in each cell, see the instructions in the
+</span><span id="__span-7-41"><a id="__codelineno-7-41" name="__codelineno-7-41"></a>    notebook.
+</span><span id="__span-7-42"><a id="__codelineno-7-42" name="__codelineno-7-42"></a>
+</span><span id="__span-7-43"><a id="__codelineno-7-43" name="__codelineno-7-43"></a>### Overview of the model creation
+</span><span id="__span-7-44"><a id="__codelineno-7-44" name="__codelineno-7-44"></a>
+</span><span id="__span-7-45"><a id="__codelineno-7-45" name="__codelineno-7-45"></a>The steps for creating the model are as follows:
+</span><span id="__span-7-46"><a id="__codelineno-7-46" name="__codelineno-7-46"></a>
+</span><span id="__span-7-47"><a id="__codelineno-7-47" name="__codelineno-7-47"></a>1.  Create feature columns using the schema information that is stored in the
+</span><span id="__span-7-48"><a id="__codelineno-7-48" name="__codelineno-7-48"></a>    `transformed_metadata` directory.
+</span><span id="__span-7-49"><a id="__codelineno-7-49" name="__codelineno-7-49"></a>1.  Create the wide and deep model with the Keras API using the feature
+</span><span id="__span-7-50"><a id="__codelineno-7-50" name="__codelineno-7-50"></a>    columns as input to the model.
+</span><span id="__span-7-51"><a id="__codelineno-7-51" name="__codelineno-7-51"></a>1.  Create the `tfrecords_input_fn` function to read and parse the training
+</span><span id="__span-7-52"><a id="__codelineno-7-52" name="__codelineno-7-52"></a>    and evaluation data using the transform artifacts.
+</span><span id="__span-7-53"><a id="__codelineno-7-53" name="__codelineno-7-53"></a>1.  Train and evaluate the model.
+</span><span id="__span-7-54"><a id="__codelineno-7-54" name="__codelineno-7-54"></a>1.  Export the trained model by defining a `serving_fn` function that has the
+</span><span id="__span-7-55"><a id="__codelineno-7-55" name="__codelineno-7-55"></a>    `transform_fn` graph attached to it.
+</span><span id="__span-7-56"><a id="__codelineno-7-56" name="__codelineno-7-56"></a>1.  Inspect the exported model using the
+</span><span id="__span-7-57"><a id="__codelineno-7-57" name="__codelineno-7-57"></a>    [`saved_model_cli`](https://www.tensorflow.org/guide/saved_model)
+</span><span id="__span-7-58"><a id="__codelineno-7-58" name="__codelineno-7-58"></a>    tool.
+</span><span id="__span-7-59"><a id="__codelineno-7-59" name="__codelineno-7-59"></a>1.  Use the exported model for prediction.
+</span><span id="__span-7-60"><a id="__codelineno-7-60" name="__codelineno-7-60"></a>
+</span><span id="__span-7-61"><a id="__codelineno-7-61" name="__codelineno-7-61"></a>This document doesn&#39;t explain how to build the model, so it doesn&#39;t discuss in
+</span><span id="__span-7-62"><a id="__codelineno-7-62" name="__codelineno-7-62"></a>detail how the model was built or trained. However, the following sections show
+</span><span id="__span-7-63"><a id="__codelineno-7-63" name="__codelineno-7-63"></a>how the information stored in the `transform_metadata` directory—which is
+</span><span id="__span-7-64"><a id="__codelineno-7-64" name="__codelineno-7-64"></a>produced by the `tf.Transform` process—is used to create the feature columns of
+</span><span id="__span-7-65"><a id="__codelineno-7-65" name="__codelineno-7-65"></a>the model. The document also shows how the `transform_fn` graph—which is also
+</span><span id="__span-7-66"><a id="__codelineno-7-66" name="__codelineno-7-66"></a>produced by `tf.Transform` process—is used in the `serving_fn` function when the
+</span><span id="__span-7-67"><a id="__codelineno-7-67" name="__codelineno-7-67"></a>model is exported for serving.
+</span><span id="__span-7-68"><a id="__codelineno-7-68" name="__codelineno-7-68"></a>
+</span><span id="__span-7-69"><a id="__codelineno-7-69" name="__codelineno-7-69"></a>### Use the generated transform artifacts in model training
+</span><span id="__span-7-70"><a id="__codelineno-7-70" name="__codelineno-7-70"></a>
+</span><span id="__span-7-71"><a id="__codelineno-7-71" name="__codelineno-7-71"></a>When you train the TensorFlow model, you use the transformed
+</span><span id="__span-7-72"><a id="__codelineno-7-72" name="__codelineno-7-72"></a>`train` and `eval` objects produced in the previous data processing step. These
+</span><span id="__span-7-73"><a id="__codelineno-7-73" name="__codelineno-7-73"></a>objects are stored as sharded files in the TFRecord format. The schema
+</span><span id="__span-7-74"><a id="__codelineno-7-74" name="__codelineno-7-74"></a>information in the `transformed_metadata` directory generated in the previous
+</span><span id="__span-7-75"><a id="__codelineno-7-75" name="__codelineno-7-75"></a>step can be useful in parsing the data (`tf.train.Example` objects) to feed into
+</span><span id="__span-7-76"><a id="__codelineno-7-76" name="__codelineno-7-76"></a>the model for training and evaluation.
+</span><span id="__span-7-77"><a id="__codelineno-7-77" name="__codelineno-7-77"></a>
+</span><span id="__span-7-78"><a id="__codelineno-7-78" name="__codelineno-7-78"></a>#### Parse the data
+</span><span id="__span-7-79"><a id="__codelineno-7-79" name="__codelineno-7-79"></a>
+</span><span id="__span-7-80"><a id="__codelineno-7-80" name="__codelineno-7-80"></a>Because you read files in the TFRecord format to feed the model with training
+</span><span id="__span-7-81"><a id="__codelineno-7-81" name="__codelineno-7-81"></a>and evaluation data, you need to parse each `tf.train.Example` object in the
+</span><span id="__span-7-82"><a id="__codelineno-7-82" name="__codelineno-7-82"></a>files to create a dictionary of features (tensors). This ensures that the
+</span><span id="__span-7-83"><a id="__codelineno-7-83" name="__codelineno-7-83"></a>features are mapped to the model input layer using the feature columns, which
+</span><span id="__span-7-84"><a id="__codelineno-7-84" name="__codelineno-7-84"></a>act as the model training and evaluation interface. To parse the data, you use
+</span><span id="__span-7-85"><a id="__codelineno-7-85" name="__codelineno-7-85"></a>the `TFTransformOutput` object that is created from the artifacts generated in
+</span><span id="__span-7-86"><a id="__codelineno-7-86" name="__codelineno-7-86"></a>the previous step:
+</span><span id="__span-7-87"><a id="__codelineno-7-87" name="__codelineno-7-87"></a>
+</span><span id="__span-7-88"><a id="__codelineno-7-88" name="__codelineno-7-88"></a>1.  Create a `TFTransformOutput` object from the artifacts that are generated
+</span><span id="__span-7-89"><a id="__codelineno-7-89" name="__codelineno-7-89"></a>    and saved in the previous preprocessing step, as described in the
+</span><span id="__span-7-90"><a id="__codelineno-7-90" name="__codelineno-7-90"></a>    [Save the graph](#save_the_graph){: track-type=&quot;solution&quot; track-name=&quot;internalLink&quot; track-metadata-position=&quot;body&quot; }
+</span><span id="__span-7-91"><a id="__codelineno-7-91" name="__codelineno-7-91"></a>    section:
+</span><span id="__span-7-92"><a id="__codelineno-7-92" name="__codelineno-7-92"></a>
+</span><span id="__span-7-93"><a id="__codelineno-7-93" name="__codelineno-7-93"></a>    ```py
+</span><span id="__span-7-94"><a id="__codelineno-7-94" name="__codelineno-7-94"></a>    tf_transform_output = tft.TFTransformOutput(TRANSFORM_ARTEFACTS_DIR)
+</span><span id="__span-7-95"><a id="__codelineno-7-95" name="__codelineno-7-95"></a>    ```
+</span><span id="__span-7-96"><a id="__codelineno-7-96" name="__codelineno-7-96"></a>
+</span><span id="__span-7-97"><a id="__codelineno-7-97" name="__codelineno-7-97"></a>1.  Extract a `feature_spec` object from the `TFTransformOutput` object:
+</span><span id="__span-7-98"><a id="__codelineno-7-98" name="__codelineno-7-98"></a>
+</span><span id="__span-7-99"><a id="__codelineno-7-99" name="__codelineno-7-99"></a>    ```py
+</span><span id="__span-7-100"><a id="__codelineno-7-100" name="__codelineno-7-100"></a>    tf_transform_output.transformed_feature_spec()
+</span><span id="__span-7-101"><a id="__codelineno-7-101" name="__codelineno-7-101"></a>    ```
+</span><span id="__span-7-102"><a id="__codelineno-7-102" name="__codelineno-7-102"></a>
+</span><span id="__span-7-103"><a id="__codelineno-7-103" name="__codelineno-7-103"></a>1.  Use the `feature_spec` object to specify the features contained in the
+</span><span id="__span-7-104"><a id="__codelineno-7-104" name="__codelineno-7-104"></a>    `tf.train.Example` object as in the `tfrecords_input_fn` function:
+</span><span id="__span-7-105"><a id="__codelineno-7-105" name="__codelineno-7-105"></a>
+</span><span id="__span-7-106"><a id="__codelineno-7-106" name="__codelineno-7-106"></a>    ```py
+</span><span id="__span-7-107"><a id="__codelineno-7-107" name="__codelineno-7-107"></a>    def tfrecords_input_fn(files_name_pattern, batch_size=512):
+</span><span id="__span-7-108"><a id="__codelineno-7-108" name="__codelineno-7-108"></a>
+</span><span id="__span-7-109"><a id="__codelineno-7-109" name="__codelineno-7-109"></a>        tf_transform_output = tft.TFTransformOutput(TRANSFORM_ARTEFACTS_DIR)
+</span><span id="__span-7-110"><a id="__codelineno-7-110" name="__codelineno-7-110"></a>        TARGET_FEATURE_NAME = &#39;weight_pounds&#39;
+</span><span id="__span-7-111"><a id="__codelineno-7-111" name="__codelineno-7-111"></a>
+</span><span id="__span-7-112"><a id="__codelineno-7-112" name="__codelineno-7-112"></a>        batched_dataset = tf.data.experimental.make_batched_features_dataset(
+</span><span id="__span-7-113"><a id="__codelineno-7-113" name="__codelineno-7-113"></a>            file_pattern=files_name_pattern,
+</span><span id="__span-7-114"><a id="__codelineno-7-114" name="__codelineno-7-114"></a>            batch_size=batch_size,
+</span><span id="__span-7-115"><a id="__codelineno-7-115" name="__codelineno-7-115"></a>            features=tf_transform_output.transformed_feature_spec(),
+</span><span id="__span-7-116"><a id="__codelineno-7-116" name="__codelineno-7-116"></a>            reader=tf.data.TFRecordDataset,
+</span><span id="__span-7-117"><a id="__codelineno-7-117" name="__codelineno-7-117"></a>            label_key=TARGET_FEATURE_NAME,
+</span><span id="__span-7-118"><a id="__codelineno-7-118" name="__codelineno-7-118"></a>            shuffle=True).prefetch(tf.data.experimental.AUTOTUNE)
+</span><span id="__span-7-119"><a id="__codelineno-7-119" name="__codelineno-7-119"></a>
+</span><span id="__span-7-120"><a id="__codelineno-7-120" name="__codelineno-7-120"></a>        return batched_dataset
+</span><span id="__span-7-121"><a id="__codelineno-7-121" name="__codelineno-7-121"></a>    ```
+</span><span id="__span-7-122"><a id="__codelineno-7-122" name="__codelineno-7-122"></a>
+</span><span id="__span-7-123"><a id="__codelineno-7-123" name="__codelineno-7-123"></a>#### Create the feature columns
+</span><span id="__span-7-124"><a id="__codelineno-7-124" name="__codelineno-7-124"></a>
+</span><span id="__span-7-125"><a id="__codelineno-7-125" name="__codelineno-7-125"></a>The pipeline produces the schema information in the `transformed_metadata`
+</span><span id="__span-7-126"><a id="__codelineno-7-126" name="__codelineno-7-126"></a>directory that describes the schema of the transformed data that is expected by
+</span><span id="__span-7-127"><a id="__codelineno-7-127" name="__codelineno-7-127"></a>the model for training and evaluation. The schema contains the feature name and
+</span><span id="__span-7-128"><a id="__codelineno-7-128" name="__codelineno-7-128"></a>data type, such as the following:
+</span><span id="__span-7-129"><a id="__codelineno-7-129" name="__codelineno-7-129"></a>
+</span><span id="__span-7-130"><a id="__codelineno-7-130" name="__codelineno-7-130"></a>-   `gestation_weeks_scaled` (type: `FLOAT`)
+</span><span id="__span-7-131"><a id="__codelineno-7-131" name="__codelineno-7-131"></a>-   `is_male_index` (type: `INT`, is_categorical: `True`)
+</span><span id="__span-7-132"><a id="__codelineno-7-132" name="__codelineno-7-132"></a>-   `is_multiple_index` (type: `INT`, is_categorical: `True`)
+</span><span id="__span-7-133"><a id="__codelineno-7-133" name="__codelineno-7-133"></a>-   `mother_age_bucketized` (type: `INT`, is_categorical: `True`)
+</span><span id="__span-7-134"><a id="__codelineno-7-134" name="__codelineno-7-134"></a>-   `mother_age_log` (type: `FLOAT`)
+</span><span id="__span-7-135"><a id="__codelineno-7-135" name="__codelineno-7-135"></a>-   `mother_age_normalized` (type: `FLOAT`)
+</span><span id="__span-7-136"><a id="__codelineno-7-136" name="__codelineno-7-136"></a>-   `mother_race_index` (type: `INT`, is_categorical: `True`)
+</span><span id="__span-7-137"><a id="__codelineno-7-137" name="__codelineno-7-137"></a>-   `weight_pounds` (type: `FLOAT`)
+</span><span id="__span-7-138"><a id="__codelineno-7-138" name="__codelineno-7-138"></a>
+</span><span id="__span-7-139"><a id="__codelineno-7-139" name="__codelineno-7-139"></a>To see this information, use the following commands:
+</span><span id="__span-7-140"><a id="__codelineno-7-140" name="__codelineno-7-140"></a>
+</span><span id="__span-7-141"><a id="__codelineno-7-141" name="__codelineno-7-141"></a>```sh
+</span><span id="__span-7-142"><a id="__codelineno-7-142" name="__codelineno-7-142"></a>transformed_metadata = tft.TFTransformOutput(TRANSFORM_ARTEFACTS_DIR).transformed_metadata
+</span><span id="__span-7-143"><a id="__codelineno-7-143" name="__codelineno-7-143"></a>transformed_metadata.schema
+</span></code></pre></div></td></tr></table></div></p>
+<p>The following code shows how you use the feature name to create feature columns:</p>
+<div class="language-py highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-8-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-8-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-8-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-8-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-8-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-8-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-8-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-8-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-8-10">10</a></span>
+<span class="normal"><a href="#__codelineno-8-11">11</a></span>
+<span class="normal"><a href="#__codelineno-8-12">12</a></span>
+<span class="normal"><a href="#__codelineno-8-13">13</a></span>
+<span class="normal"><a href="#__codelineno-8-14">14</a></span>
+<span class="normal"><a href="#__codelineno-8-15">15</a></span>
+<span class="normal"><a href="#__codelineno-8-16">16</a></span>
+<span class="normal"><a href="#__codelineno-8-17">17</a></span>
+<span class="normal"><a href="#__codelineno-8-18">18</a></span>
+<span class="normal"><a href="#__codelineno-8-19">19</a></span>
+<span class="normal"><a href="#__codelineno-8-20">20</a></span>
+<span class="normal"><a href="#__codelineno-8-21">21</a></span>
+<span class="normal"><a href="#__codelineno-8-22">22</a></span>
+<span class="normal"><a href="#__codelineno-8-23">23</a></span>
+<span class="normal"><a href="#__codelineno-8-24">24</a></span>
+<span class="normal"><a href="#__codelineno-8-25">25</a></span>
+<span class="normal"><a href="#__codelineno-8-26">26</a></span>
+<span class="normal"><a href="#__codelineno-8-27">27</a></span>
+<span class="normal"><a href="#__codelineno-8-28">28</a></span>
+<span class="normal"><a href="#__codelineno-8-29">29</a></span>
+<span class="normal"><a href="#__codelineno-8-30">30</a></span>
+<span class="normal"><a href="#__codelineno-8-31">31</a></span>
+<span class="normal"><a href="#__codelineno-8-32">32</a></span>
+<span class="normal"><a href="#__codelineno-8-33">33</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="k">def</span> <span class="nf">create_wide_and_deep_feature_columns</span><span class="p">():</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3"></a>    <span class="n">deep_feature_columns</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4"></a>    <span class="n">wide_feature_columns</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5"></a>    <span class="n">inputs</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6"></a>    <span class="n">categorical_columns</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7"></a>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8"></a>    <span class="c1"># Select features you&#39;ve checked from the metadata</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9"></a>    <span class="c1"># Categorical features are associated with the vocabulary size (starting from 0)</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10"></a>    <span class="n">numeric_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mother_age_log&#39;</span><span class="p">,</span> <span class="s1">&#39;mother_age_normalized&#39;</span><span class="p">,</span> <span class="s1">&#39;gestation_weeks_scaled&#39;</span><span class="p">]</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11"></a>    <span class="n">categorical_features</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;is_male_index&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;is_multiple_index&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12"></a>                            <span class="p">(</span><span class="s1">&#39;mother_age_bucketized&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;mother_race_index&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)]</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13"></a>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14"></a>    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">numeric_features</span><span class="p">:</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15"></a>        <span class="n">deep_feature_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">numeric_column</span><span class="p">(</span><span class="n">feature</span><span class="p">))</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16"></a>        <span class="n">inputs</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="n">feature</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17"></a>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18"></a>    <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">vocab_size</span> <span class="ow">in</span> <span class="n">categorical_features</span><span class="p">:</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19"></a>        <span class="n">categorical_columns</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20"></a>            <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">categorical_column_with_identity</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">num_buckets</span><span class="o">=</span><span class="n">vocab_size</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21"></a>        <span class="n">wide_feature_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">indicator_column</span><span class="p">(</span><span class="n">categorical_columns</span><span class="p">[</span><span class="n">feature</span><span class="p">]))</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22"></a>        <span class="n">inputs</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="n">feature</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23"></a>
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24"></a>    <span class="n">mother_race_X_mother_age_bucketized</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">crossed_column</span><span class="p">(</span>
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25"></a>        <span class="p">[</span><span class="n">categorical_columns</span><span class="p">[</span><span class="s1">&#39;mother_age_bucketized&#39;</span><span class="p">],</span>
+</span><span id="__span-8-26"><a id="__codelineno-8-26" name="__codelineno-8-26"></a>         <span class="n">categorical_columns</span><span class="p">[</span><span class="s1">&#39;mother_race_index&#39;</span><span class="p">]],</span>  <span class="mi">55</span><span class="p">)</span>
+</span><span id="__span-8-27"><a id="__codelineno-8-27" name="__codelineno-8-27"></a>    <span class="n">wide_feature_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">indicator_column</span><span class="p">(</span><span class="n">mother_race_X_mother_age_bucketized</span><span class="p">))</span>
+</span><span id="__span-8-28"><a id="__codelineno-8-28" name="__codelineno-8-28"></a>
+</span><span id="__span-8-29"><a id="__codelineno-8-29" name="__codelineno-8-29"></a>    <span class="n">mother_race_X_mother_age_bucketized_embedded</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">feature_column</span><span class="o">.</span><span class="n">embedding_column</span><span class="p">(</span>
+</span><span id="__span-8-30"><a id="__codelineno-8-30" name="__codelineno-8-30"></a>        <span class="n">mother_race_X_mother_age_bucketized</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</span><span id="__span-8-31"><a id="__codelineno-8-31" name="__codelineno-8-31"></a>    <span class="n">deep_feature_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mother_race_X_mother_age_bucketized_embedded</span><span class="p">)</span>
+</span><span id="__span-8-32"><a id="__codelineno-8-32" name="__codelineno-8-32"></a>
+</span><span id="__span-8-33"><a id="__codelineno-8-33" name="__codelineno-8-33"></a>    <span class="k">return</span> <span class="n">wide_feature_columns</span><span class="p">,</span> <span class="n">deep_feature_columns</span><span class="p">,</span> <span class="n">inputs</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The code creates a <code>tf.feature_column.numeric_column</code> column for numeric
+features, and a <code>tf.feature_column.categorical_column_with_identity</code> column for
+categorical features.</p>
+<p>You can also create extended feature columns, as described in
+<a href="/architecture/data-preprocessing-for-ml-with-tf-transform-pt1#option_c_tensorflow" track-metadata-position="body" track-name="internalLink" track-type="solution">Option C: TensorFlow</a>
+in the first part of this series. In the example used for this series, a new
+feature is created, <code>mother_race_X_mother_age_bucketized</code>, by crossing the
+<code>mother_race</code> and <code>mother_age_bucketized</code> features using the
+<code>tf.feature_column.crossed_column</code> feature column. Low-dimensional, dense
+representation of this crossed feature is created using the
+<code>tf.feature_column.embedding_column</code> feature column.</p>
+<p>The following diagram, figure 5, shows the transformed data and how the
+transformed metadata is used to define and train the TensorFlow
+model:</p>
+<figure id="training-tf-with-transformed-data">
+  <img src="images/data-preprocessing-for-ml-with-tf-transform-training-tf-model-with-transformed-data.svg"
+    alt="Training the TensorFlow model with transformed data.">
+  <figcaption><b>Figure 5.</b> Training the TensorFlow model with
+    the transformed data.</figcaption>
+</figure>
+
+<h3 id="export-the-model-for-serving-prediction">Export the model for serving prediction<a class="headerlink" href="#export-the-model-for-serving-prediction" title="Permanent link">&para;</a></h3>
+<p>After you train the TensorFlow model with the Keras API, you
+export the trained model as a SavedModel object, so that it can serve new data
+points for prediction. When you export the model, you have to define its
+interface—that is, the input features schema that is expected during serving.
+This input features schema is defined in the <code>serving_fn</code> function, as shown in
+the following code:</p>
+<p>```py{:.devsite-disable-click-to-copy}
+def export_serving_model(model, output_dir):</p>
+<div class="language-text highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code>tf_transform_output = tft.TFTransformOutput(TRANSFORM_ARTEFACTS_DIR)
+# The layer has to be saved to the model for Keras tracking purposes.
+model.tft_layer = tf_transform_output.transform_features_layer()
+
+@tf.function
+def serveing_fn(uid, is_male, mother_race, mother_age, plurality, gestation_weeks):
+    features = {
+        &#39;is_male&#39;: is_male,
+        &#39;mother_race&#39;: mother_race,
+        &#39;mother_age&#39;: mother_age,
+        &#39;plurality&#39;: plurality,
+        &#39;gestation_weeks&#39;: gestation_weeks
+    }
+    transformed_features = model.tft_layer(features)
+    outputs = model(transformed_features)
+    # The prediction results have multiple elements in general.
+    # But we need only the first element in our case.
+    outputs = tf.map_fn(lambda item: item[0], outputs)
+
+    return {&#39;uid&#39;: uid, &#39;weight&#39;: outputs}
+
+concrete_serving_fn = serveing_fn.get_concrete_function(
+    tf.TensorSpec(shape=[None], dtype=tf.string, name=&#39;uid&#39;),
+    tf.TensorSpec(shape=[None], dtype=tf.string, name=&#39;is_male&#39;),
+    tf.TensorSpec(shape=[None], dtype=tf.string, name=&#39;mother_race&#39;),
+    tf.TensorSpec(shape=[None], dtype=tf.float32, name=&#39;mother_age&#39;),
+    tf.TensorSpec(shape=[None], dtype=tf.float32, name=&#39;plurality&#39;),
+    tf.TensorSpec(shape=[None], dtype=tf.float32, name=&#39;gestation_weeks&#39;)
+)
+signatures = {&#39;serving_default&#39;: concrete_serving_fn}
+
+model.save(output_dir, save_format=&#39;tf&#39;, signatures=signatures)
+</code></pre></div></td></tr></table></div>
+<p><code>During serving, the model expects the data points in their raw form (that is,
+raw features before transformations). Therefore, the `serving_fn` function
+receives the raw features and stores them in a `features` object as a Python
+dictionary. However, as discussed earlier, the trained model expects the data
+points in the transformed schema. To convert the raw features into the
+`transformed_features` objects that are expected by the model interface, you
+apply the saved `transform_fn` graph to the `features` object with the
+following steps:
+
+1.  Create the `TFTransformOutput` object from the artifacts generated and
+    saved in the previous preprocessing step:</code>py
+    tf_transform_output = tft.TFTransformOutput(TRANSFORM_ARTEFACTS_DIR)
+    <code>1.  Create a `TransformFeaturesLayer` object from the `TFTransformOutput`
+    object:</code>py
+    model.tft_layer = tf_transform_output.transform_features_layer()
+    <code>1.  Apply the `transform_fn` graph using the `TransformFeaturesLayer` object:</code>py
+    transformed_features = model.tft_layer(features)
+    ```
+
+The following diagram, figure 6, illustrates the final step of exporting a model
+for serving:
+
+<figure id="exporting-model-for-serving-with-transform_fn">
+  <img src="images/data-preprocessing-for-ml-with-tf-transform-exporting-model-for-serving-with-transform_fn.svg"
+    alt="Exporting the model for serving with the transform_fn graph attached.">
+  <figcaption><b>Figure 6.</b> Exporting the model for serving with the
+    <code>transform_fn</code> graph attached.</figcaption>
+</figure>
+</p>
+<h2 id="train-and-use-the-model-for-predictions">Train and use the model for predictions<a class="headerlink" href="#train-and-use-the-model-for-predictions" title="Permanent link">&para;</a></h2>
+<p>You can train the model locally by executing the cells of the notebook. For
+examples of how to package the code and train your model at scale using
+Vertex AI Training, see the samples and guides in the Google Cloud
+<a class="external" href="https://github.com/GoogleCloudPlatform/cloudml-samples">cloudml-samples</a>
+GitHub repository.
+
+When you inspect the exported SavedModel object using the <code>saved_model_cli</code>
+tool, you see that the <code>inputs</code> elements of the signature definition
+<code>signature_def</code> include the raw features, as shown in the following example:
+
+<code>py{:.devsite-disable-click-to-copy}
+signature_def['serving_default']:
+  The given SavedModel SignatureDef contains the following input(s):
+    inputs['gestation_weeks'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1)
+        name: serving_default_gestation_weeks:0
+    inputs['is_male'] tensor_info:
+        dtype: DT_STRING
+        shape: (-1)
+        name: serving_default_is_male:0
+    inputs['mother_age'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1)
+        name: serving_default_mother_age:0
+    inputs['mother_race'] tensor_info:
+        dtype: DT_STRING
+        shape: (-1)
+        name: serving_default_mother_race:0
+    inputs['plurality'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1)
+        name: serving_default_plurality:0
+    inputs['uid'] tensor_info:
+        dtype: DT_STRING
+        shape: (-1)
+        name: serving_default_uid:0
+  The given SavedModel SignatureDef contains the following output(s):
+    outputs['uid'] tensor_info:
+        dtype: DT_STRING
+        shape: (-1)
+        name: StatefulPartitionedCall_6:0
+    outputs['weight'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1)
+        name: StatefulPartitionedCall_6:1
+  Method name is: tensorflow/serving/predict</code></p>
+<p>The remaining cells of the notebook show you how to use the exported model for
+a local prediction, and how to deploy the model as a microservice using
+Vertex AI Prediction. It is important to highlight that the input (sample)
+data point is in the raw schema in both cases.</p>
+<h2 id="clean-up">Clean up<a class="headerlink" href="#clean-up" title="Permanent link">&para;</a></h2>
+<p>To avoid incurring additional charges to your Google Cloud account for the
+resources used in this tutorial, delete the project that contains the resources.</p>
+<h3 id="delete-the-project">Delete the project<a class="headerlink" href="#delete-the-project" title="Permanent link">&para;</a></h3>
+<aside class="caution">
+    <strong>Caution</strong>: Deleting a project has the following effects:
+    <ul>
+      <li>
+        <strong>Everything in the project is deleted.</strong> If you used an existing project for
+        this tutorial, when you delete it, you also delete any other work you've done in the project.
+      </li>
+      <li>
+        <strong>Custom project IDs are lost.</strong>
+        When you created this project, you might have created a custom project ID that you want to use in
+        the future. To preserve the URLs that use the project ID, such as an <code translate="no" dir="ltr">appspot.com</code>
+        URL, delete selected resources inside the project instead of deleting the whole project.
+      </li>
+    </ul>
+    <p>
+      If you plan to explore multiple tutorials and quickstarts, reusing projects can help you avoid
+      exceeding project quota limits.
+    </p>
+  </aside>
+
+<ol>
+<li>In the Google Cloud console,
+   go to the <strong>Manage resources</strong> page.</li>
+</ol>
+<p><a class="button button-primary" href="https://console.cloud.google.com/iam-admin/projects" target="console" track-metadata-position="body" track-name="consoleLink" track-type="solution">Go to Manage resources</a></p>
+<ol>
+<li>In the project list, select the project that you want to delete, and then
+   click <strong>Delete</strong>.</li>
+<li>In the dialog, type the project ID, and then click <strong>Shut down</strong> to delete
+   the project.</li>
+</ol>
+<h2 id="whats-next">What's next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
+<ul>
+<li>To learn about the concepts, challenges, and options of data
+    preprocessing for machine learning on Google Cloud, see the first
+    article in this series,
+    <a href="../guide/tft_bestpractices">Data preprocessing for ML: options and recommendations</a>.</li>
+<li>For more information about how to implement, package, and run a
+    tf.Transform pipeline on Dataflow, see the
+    <a class="external" href="https://github.com/GoogleCloudPlatform/cloudml-samples/tree/master/census/tftransformestimator">Predicting income with Census Dataset</a>
+    sample.</li>
+<li>Take the Coursera specialization on ML with
+    <a class="external" href="https://www.coursera.org/specializations/machine-learning-tensorflow-gcp">TensorFlow on Google Cloud</a>.</li>
+<li>Learn about best practices for ML engineering in
+    <a class="external" href="https://developers.google.com/machine-learning/guides/rules-of-ml/">Rules of ML</a>.</li>
+<li>For more reference architectures, diagrams, and best practices, explore the
+    <a href="https://cloud.google.com/architecture">Cloud Architecture Center</a>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      
+    
+  </body>
+</html>
