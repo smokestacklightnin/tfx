@@ -166,5 +166,5 @@ nav:
         - "ML Metadata": guide/mlmd
         - "TensorBoard": "https://www.tensorflow.org/tensorboard"
   - API:
-    - "Overview": api/root.md
-    - "Components": api/components.md
+    - "Overview": api/root
+    - "Components": api/components
