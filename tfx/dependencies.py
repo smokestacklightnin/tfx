@@ -251,6 +251,7 @@ def make_extra_packages_docs():
       'griffe-inherited-docstrings',
       'mkdocs-autorefs',
       'black',
+      'mkdocs-jupyter',
   ]
 
 
