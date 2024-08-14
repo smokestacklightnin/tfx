@@ -60,7 +60,7 @@ plugins:
           import:
             - https://docs.python.org/3/objects.inv
   - mkdocs-jupyter:
-      execute: true
+      execute: false
       execute_ignore: # There are issues with executing these notebooks
         - tutorials/serving/rest_simple.ipynb
         - tutorials/tfx/gcp/*.ipynb
