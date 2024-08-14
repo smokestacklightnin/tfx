@@ -32,7 +32,7 @@ using the standard TFX components with other frameworks include:
     instead of raw features, and users can run transform as a preprocessing
     step before calling the model prediction when serving.
 *   **Trainer** supports
-    [GenericTraining](https://www.tensorflow.org/tfx/guide/trainer#generic_trainer)
+    [GenericTraining](trainer.md#generic-trainer)
     so users can train their models using any ML framework.
 *   **Evaluator** by default only supports `saved_model`, but users can provide
     a UDF that generates predictions for model evaluation.
