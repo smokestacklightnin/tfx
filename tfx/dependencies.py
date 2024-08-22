@@ -261,6 +261,7 @@ def make_extra_packages_docs():
         "black",
         "mkdocs-jupyter",
         "mkdocs-caption",
+        "pymdown-extensions",
     ]
 
 
