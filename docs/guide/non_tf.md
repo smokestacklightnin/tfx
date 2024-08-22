@@ -49,7 +49,7 @@ high-performance machine learning research.
 is a neural network library and ecosystem for JAX, designed for flexibility.
 
 With [jax2tf](https://github.com/google/jax/tree/main/jax/experimental/jax2tf),
-we are able to convert trained JAX/Flax models into `saved_model` format, 
+we are able to convert trained JAX/Flax models into `saved_model` format,
 which can be used seamlessly in TFX with generic training and model evaluation.
 For details, check this [example](https://github.com/tensorflow/tfx/blob/master/tfx/examples/penguin/penguin_utils_flax_experimental.py).
 
