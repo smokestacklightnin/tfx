@@ -244,15 +244,8 @@ PairedExampleSkew.__doc__ = """
 Configurations related to Example Diff on feature pairing level.
 """
 
-class DummyClass:
-    #"""dummy docstring"""
-    pass
-
-DummyClass
-"""dummy docstring"""
 
 __all__ = [
-    "DummyClass",
     "orchestration",
     "ClassifyOutput",
     "CustomConfig",
