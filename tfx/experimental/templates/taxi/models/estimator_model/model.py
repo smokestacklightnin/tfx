@@ -200,24 +200,18 @@ def _create_train_and_eval_spec(trainer_fn_args, schema):
 
   tf_transform_output = tft.TFTransformOutput(trainer_fn_args.transform_output)
 
-  train_input_fn = lambda: _input_fn(  # pylint: disable=g-long-lambda
-      trainer_fn_args.train_files,
-      trainer_fn_args.data_accessor,
-      tf_transform_output,
-      batch_size=constants.TRAIN_BATCH_SIZE)
+  def train_input_fn():
+    return _input_fn(trainer_fn_args.train_files, trainer_fn_args.data_accessor, tf_transform_output, batch_size=constants.TRAIN_BATCH_SIZE)
 
-  eval_input_fn = lambda: _input_fn(  # pylint: disable=g-long-lambda
-      trainer_fn_args.eval_files,
-      trainer_fn_args.data_accessor,
-      tf_transform_output,
-      batch_size=constants.EVAL_BATCH_SIZE)
+  def eval_input_fn():
+    return _input_fn(trainer_fn_args.eval_files, trainer_fn_args.data_accessor, tf_transform_output, batch_size=constants.EVAL_BATCH_SIZE)
 
   train_spec = tf_estimator.TrainSpec(  # pylint: disable=g-long-lambda
       train_input_fn,
       max_steps=trainer_fn_args.train_steps)
 
-  serving_receiver_fn = lambda: _example_serving_receiver_fn(  # pylint: disable=g-long-lambda
-      tf_transform_output, schema)
+  def serving_receiver_fn():
+    return _example_serving_receiver_fn(tf_transform_output, schema)
 
   exporter = tf_estimator.FinalExporter('chicago-taxi', serving_receiver_fn)
   eval_spec = tf_estimator.EvalSpec(
@@ -235,8 +229,8 @@ def _create_train_and_eval_spec(trainer_fn_args, schema):
       hidden_units=constants.HIDDEN_UNITS, config=run_config)
 
   # Create an input receiver for TFMA processing
-  receiver_fn = lambda: _eval_input_receiver_fn(  # pylint: disable=g-long-lambda
-      tf_transform_output, schema)
+  def receiver_fn():
+    return _eval_input_receiver_fn(tf_transform_output, schema)
 
   return {
       'estimator': estimator,

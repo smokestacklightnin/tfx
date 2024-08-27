@@ -1337,7 +1337,8 @@ def orchestrate(
     status_lib.StatusNotOkError: If error generating tasks.
   """
   if filter_fn is None:
-    filter_fn = lambda _: True
+    def filter_fn(_):
+      return True
 
   # Try to load active pipelines. If there is a recoverable error, return True
   # and then retry in the next orchestration iteration.

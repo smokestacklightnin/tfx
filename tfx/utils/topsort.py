@@ -75,10 +75,10 @@ def topsorted_layers(
 
     return result
 
-  get_clean_parent_nodes = (
-      lambda node: _apply_and_clean(get_parent_nodes, 'get_parent_nodes', node))
-  get_clean_child_nodes = (
-      lambda node: _apply_and_clean(get_child_nodes, 'get_child_nodes', node))
+  def get_clean_parent_nodes(node):
+    return _apply_and_clean(get_parent_nodes, 'get_parent_nodes', node)
+  def get_clean_child_nodes(node):
+    return _apply_and_clean(get_child_nodes, 'get_child_nodes', node)
 
   # The first layer contains nodes with no incoming edges.
   layer = [node for node in nodes if not get_clean_parent_nodes(node)]

@@ -197,11 +197,12 @@ def parse_elwc_with_struct2tensor(
     project_map = {}
     if is_context:
       get_feature_path = get_context_feature_path
-      get_promote_destination = lambda leaf_name: path.Path([leaf_name])
+      def get_promote_destination(leaf_name):
+        return path.Path([leaf_name])
     else:
       get_feature_path = get_example_feature_path
-      get_promote_destination = lambda leaf_name: path.Path(  # pylint: disable=g-long-lambda
-          ['examples', leaf_name])
+      def get_promote_destination(leaf_name):
+        return path.Path(['examples', leaf_name])
     for feature in features:
       promote_map[get_step_name(feature.name)] = get_feature_path(feature)
       leaf_name = (get_step_name(feature.name) if feature.default_value is None

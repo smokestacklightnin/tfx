@@ -39,7 +39,8 @@ class ResolverNodeHandler(system_node_handler.SystemNodeHandler):
       self,
       # The actual type of proto message of map<str, pipeline_pb2.Value>.
       proto_map: Any) -> Dict[str, Any]:
-    extract_mlmd_value = lambda v: getattr(v, v.WhichOneof('value'))
+    def extract_mlmd_value(v):
+      return getattr(v, v.WhichOneof('value'))
     return {k: extract_mlmd_value(v.field_value) for k, v in proto_map.items()}
 
   def run(

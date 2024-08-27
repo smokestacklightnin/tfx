@@ -369,10 +369,12 @@ def resolver_function(
   if unwrap_dict_key:
     if isinstance(unwrap_dict_key, str):
       key = cast(str, unwrap_dict_key)
-      loopable_transform = lambda d: d[key]
+      def loopable_transform(d):
+        return d[key]
     elif typing_utils.is_compatible(unwrap_dict_key, Sequence[str]):
       keys = cast(Sequence[str], unwrap_dict_key)
-      loopable_transform = lambda d: tuple(d[key] for key in keys)
+      def loopable_transform(d):
+        return tuple(d[key] for key in keys)
     else:
       raise ValueError(
           'Invalid unwrap_dict_key: Expected str or Sequence[str] but got '

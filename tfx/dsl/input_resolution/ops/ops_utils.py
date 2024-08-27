@@ -217,21 +217,14 @@ def filter_artifacts_by_span(
     # Recursively resolve nested key attributes like
     # 'mlmd_artifact.create_time_since_epoch' to the form
     # getattr(getattr(artifact, 'mlmd_artifact'), 'create_time_since_epoch')
-    key = lambda a: (
-        tuple(
-            functools.reduce(getattr, k.split('.'), a)
-            for k in version_sort_keys
-        )
-    )
+    def key(a):
+      return tuple(functools.reduce(getattr, k.split('.'), a) for k in version_sort_keys)
   else:
     # span_descending only applies to sorting by span, but version should
     # always be sorted in ascending order. By default, latest version is defined
     # as the largest version and ties are broken by create_time and  id.
-    key = lambda a: (  # pylint: disable=g-long-lambda
-        a.version,
-        a.mlmd_artifact.create_time_since_epoch,
-        a.id,
-    )
+    def key(a):
+      return a.version, a.mlmd_artifact.create_time_since_epoch, a.id
 
   result = []
   for span in sorted(spans):
