@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu]
+        os: [ubuntu, macos]
         python-version: ['cp39', 'cp310']
 
     runs-on: ${{ format('{0}-latest', matrix.os) }}
@@ -63,16 +63,6 @@ jobs:
     - name: Install python build dependencies
       run: |
           pip install wheel
-
-    - uses: bazel-contrib/setup-bazel@0.8.5
-      name: Set up Bazel
-      with:
-        # Avoid downloading Bazel every time.
-        bazelisk-cache: true
-        # Store build cache per workflow.
-        disk-cache: ${{ github.workflow }}-${{ hashFiles('.github/workflows/wheels.yml') }}
-        # Share repository cache between workflows.
-        repository-cache: true
 
     - name: Verify bazel installation
       run: |
